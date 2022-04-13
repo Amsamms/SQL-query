@@ -1,0 +1,86 @@
+SELECT g.Name As Genre_type, SUM(i.UnitPrice * i.Quantity) AS total_Sales_USD, SUM(i.Quantity) AS total_quantity_Saled
+FROM Genre AS g
+JOIN Track AS t
+ON t.GenreId=g.GenreId
+JOIN InvoiceLine i
+ON i.TrackID=t.TrackID
+GROUP BY 1
+ORDER BY 2 DESC
+LIMIT 4;
+
+
+SELECT c.FirstName||" "||c.LastName AS Customer_full_name, SUM(i.total) As total_spent
+FROM Invoice AS i
+JOIN Customer AS c
+ON c.CustomerId=i.CustomerId
+Group BY 1
+ORDER BY 2 DESC
+LIMIT 5;
+
+
+
+
+With t1 as (Select
+ c.Country,  SUM (i.Total) AS total_spent
+ FROM Invoice AS i
+ JOIN customer AS c
+ ON c.customerid = i.CustomerId
+ WHERE STRFTIME('%Y', i.InvoiceDate)='2009'
+ Group BY 1
+ ORDER BY 2 DESC
+ LIMIT 3),
+t2 AS (Select
+ c.Country,  SUM (i.Total) AS total_spent
+ FROM Invoice AS i
+ JOIN customer AS c
+ ON c.customerid = i.CustomerId
+ WHERE STRFTIME('%Y', i.InvoiceDate)='2010'
+ Group BY 1
+ ORDER BY 2 DESC
+ LIMIT 3),
+t3 AS (Select
+ c.Country,  SUM (i.Total) AS total_spent
+ FROM Invoice AS i
+ JOIN customer AS c
+ ON c.customerid = i.CustomerId
+ WHERE STRFTIME('%Y', i.InvoiceDate)='2011'
+ Group BY 1
+ ORDER BY 2 DESC
+ LIMIT 3),
+t4 AS (Select
+ c.Country,  SUM (i.Total) AS total_spent
+ FROM Invoice AS i
+ JOIN customer AS c
+ ON c.customerid = i.CustomerId
+ WHERE STRFTIME('%Y', i.InvoiceDate)='2012'
+ Group BY 1
+ ORDER BY 2 DESC
+ LIMIT 3),
+t5 AS (Select
+ c.Country,  SUM (i.Total) AS total_spent
+ FROM Invoice AS i
+ JOIN customer AS c
+ ON c.customerid = i.CustomerId
+ WHERE STRFTIME('%Y', i.InvoiceDate)='2013'
+ Group BY 1
+ ORDER BY 2 DESC
+ LIMIT 3)
+SELECT STRFTIME('%Y', i.InvoiceDate) as Year, c.Country, SUM (i.Total) AS total_spent
+FROM Invoice AS i
+JOIN customer AS c
+ON c.customerid = i.CustomerId
+Group BY 1, 2
+Having SUM (i.Total) in (SELECT total_spent from t1)
+OR SUM (i.Total) in (SELECT total_spent from t2)
+OR SUM (i.Total) in (SELECT total_spent from t3)
+OR SUM (i.Total) in (SELECT total_spent from t4)
+OR SUM (i.Total) in (SELECT total_spent from t5);
+
+
+
+SELECT e.FirstName||" "||e.LastName AS Employee_name, Count(c.CustomerID) AS custemers_number
+FROM Employee AS e
+JOIN Customer AS c
+ON e.EmployeeId=c.SupportRepId
+Group By 1
+ORDER BY 2 DESC;
